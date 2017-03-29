@@ -41,9 +41,11 @@ joke
 toss 1
 toss 2
 equal
+
 catch drop
 catch drop
 catch
+
 if
     toss "yes"
     catch joke
