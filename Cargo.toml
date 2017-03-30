@@ -1,0 +1,10 @@
+[package]
+name = "juggle"
+version = "0.1.0"
+authors = ["cheezgi <zackh@firemail.cc>"]
+
+[dependencies]
+argparse = "*"
+rustyline = "*"
+regex = "*"
+
