@@ -7,6 +7,7 @@ pub enum ErrorType {
     HandsUnderflowError,
     AirUnderflowError,
     TypeError,
+    MismatchingEndError,
 }
 
 #[derive(Debug)]

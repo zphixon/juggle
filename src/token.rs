@@ -19,11 +19,10 @@ pub enum TokenType {
     End,
     Append,
     Drop,
-    Newline,
     Number(i64),
     Bool(bool),
     EndOfFile,
-    None, // filter out later
+    None,
 }
 
 #[derive(Debug)]

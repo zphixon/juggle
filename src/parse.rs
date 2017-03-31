@@ -11,6 +11,8 @@ pub fn lex(data: String) -> Result<Vec<Token>, Error> {
 
     let mut line: u64 = 1;
 
+    let mut comment = false;
+
     let number = Regex::new("[0-9]+").unwrap();
 
     let mut str_tokens: Vec<&str> = Vec::new();
@@ -44,14 +46,22 @@ pub fn lex(data: String) -> Result<Vec<Token>, Error> {
             "append" => TokenType::Append,
             "drop" => TokenType::Drop,
             "\n" => {
+                if comment { comment = false; }
                 line += 1;
-                TokenType::Newline
+                TokenType::None
             },
             _ => {
-                if number.is_match(str_tok) {
-                    TokenType::Number(str_tok.parse::<i64>().unwrap())
+                if !comment {
+                    if number.is_match(str_tok) {
+                        TokenType::Number(str_tok.parse::<i64>().unwrap())
+                    } else if str_tok.starts_with("#") {
+                        comment = true;
+                        TokenType::None
+                    } else {
+                        return Err(Error::new(ErrorType::SyntaxError, "Unkown command".into(), line));
+                    }
                 } else {
-                    return Err(Error::new(ErrorType::SyntaxError, "Unkown command".into(), line));
+                    TokenType::None
                 }
             }
         }, line));

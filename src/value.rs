@@ -1,6 +1,7 @@
 
 #[derive(PartialOrd, PartialEq, Debug, Clone)]
 pub enum Value {
+    Null,
     Bool(bool),
     Number(i64),
     Array(Vec<Value>),
@@ -8,7 +9,7 @@ pub enum Value {
 
 impl Value {
     pub fn same_type(a: &Value, b: &Value) -> bool {
-        (a.is_number() && b.is_number()) || (a.is_array() && b.is_array()) || (a.is_bool() && b.is_bool())
+        (a.is_number() && b.is_number()) || (a.is_array() && b.is_array()) || (a.is_bool() && b.is_bool() || (a.is_null() && b.is_null()))
     }
 
     pub fn print_as_char(&self) {
@@ -18,8 +19,10 @@ impl Value {
             for c in self.get_array() {
                 c.print_as_char();
             }
-        } else {
+        } else if self.is_bool() {
             print!("{}", self.get_bool());
+        } else {
+            print!("{:?}", Value::Null);
         }
     }
 
@@ -50,6 +53,13 @@ impl Value {
     pub fn is_bool(&self) -> bool {
         match self {
             &Value::Bool(_) => true,
+            _ => false
+        }
+    }
+
+    pub fn is_null(&self) -> bool {
+        match self {
+            &Value::Null => true,
             _ => false
         }
     }

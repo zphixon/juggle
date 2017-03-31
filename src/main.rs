@@ -47,6 +47,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 if frames[current_frame] {
                     if k + 1 != prog.len() && prog[k + 1].is_value() {
                         air.push(prog[k + 1].to_value());
+                        k += 1;
                     } else {
                         let tmp = hands.pop();
                         if tmp.is_some() {
@@ -71,7 +72,10 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 if frames[current_frame] {
                     let opt = hands.pop();
                     if opt.is_some() {
-                        opt.unwrap().print_as_number();
+                        let tmp = opt.unwrap();
+                        if !tmp.is_null() {
+                            tmp.print_as_number();
+                        }
                     } else {
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when printing value".into(), prog[k].line));
                     }
@@ -81,7 +85,10 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 if frames[current_frame] {
                     let opt = hands.pop();
                     if opt.is_some() {
-                        opt.unwrap().print_as_char();
+                        let tmp = opt.unwrap();
+                        if !tmp.is_null() {
+                            tmp.print_as_char();
+                        }
                     } else {
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when printing value".into(), prog[k].line));
                     }
@@ -95,7 +102,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         let lhs = lho.unwrap();
                         let rhs = rho.unwrap();
                         if Value::same_type(&lhs, &rhs) {
-                            air.push(Value::Bool(lhs == rhs));
+                            hands.push(Value::Bool(lhs == rhs));
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to compare different types (equal)".into(), prog[k].line));
                         }
@@ -112,7 +119,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         let lhs = lho.unwrap();
                         let rhs = rho.unwrap();
                         if lhs.is_number() && rhs.is_number() {
-                            air.push(Value::Bool(lhs.get_number() > rhs.get_number()));
+                            hands.push(Value::Bool(lhs.get_number() > rhs.get_number()));
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to compare non-number types (greater)".into(), prog[k].line));
                         }
@@ -129,7 +136,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         let lhs = lho.unwrap();
                         let rhs = rho.unwrap();
                         if lhs.is_number() && rhs.is_number() {
-                            air.push(Value::Bool(lhs.get_number() < rhs.get_number()));
+                            hands.push(Value::Bool(lhs.get_number() < rhs.get_number()));
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to compare non-number types (lesser)".into(), prog[k].line));
                         }
@@ -146,7 +153,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         let lhs = lho.unwrap();
                         let rhs = rho.unwrap();
                         if lhs.is_bool() && rhs.is_bool() {
-                            air.push(Value::Bool(lhs.get_bool() && rhs.get_bool()));
+                            hands.push(Value::Bool(lhs.get_bool() && rhs.get_bool()));
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to compare non-bools (and)".into(), prog[k].line));
                         }
@@ -163,7 +170,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         let lhs = lho.unwrap();
                         let rhs = rho.unwrap();
                         if lhs.is_bool() && rhs.is_bool() {
-                            air.push(Value::Bool(lhs.get_bool() || rhs.get_bool()));
+                            hands.push(Value::Bool(lhs.get_bool() || rhs.get_bool()));
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to compare non-bools (and)".into(), prog[k].line));
                         }
@@ -174,30 +181,112 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
             },
             TokenType::Not => {
                 if frames[current_frame] {
+                    let tmpo = hands.pop();
+                    if tmpo.is_some() {
+                        let tmp = tmpo.unwrap();
+                        if tmp.is_bool() {
+                            hands.push(Value::Bool(!tmp.get_bool()));
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to negate non-bool (not)".into(), prog[k].line));
+                        }
+                    } else {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when negating a value (not)".into(), prog[k].line));
+                    }
                 }
             },
             TokenType::If => {
                 if frames[current_frame] {
+                    let tmpo = air.pop();
+                    if tmpo.is_some() {
+                        let tmp = tmpo.unwrap();
+                        if tmp.is_bool() {
+                            frames.push(tmp.get_bool());
+                            current_frame += 1;
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Condition requires bool (if)".into(), prog[k].line));
+                        }
+                    } else {
+                        return Err(Error::new(ErrorType::AirUnderflowError, "Air underflowed when checking condition (if)".into(), prog[k].line));
+                    }
                 }
             },
             TokenType::While => {
                 if frames[current_frame] {
+                    let tmpo = air.pop();
+                    if tmpo.is_some() {
+                        let tmp = tmpo.unwrap();
+                        if tmp.is_bool() {
+                            if tmp.get_bool() {
+                                frames.push(true);
+                                whiles.push(k);
+                            } else {
+                                frames.push(false);
+                                whiles.push(0);
+                            }
+                            current_frame += 1;
+                            current_while += 1;
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Condition requires bool (while)".into(), prog[k].line));
+                        }
+                    } else {
+                        return Err(Error::new(ErrorType::AirUnderflowError, "Air underflowed when checking condition (while)".into(), prog[k].line));
+                    }
                 }
             },
             TokenType::Else => {
+                frames[current_frame] = !frames[current_frame];
             },
             TokenType::End => {
+                if current_frame != 0 {
+                    if whiles[current_while] == 0 {
+                        frames.pop();
+                        current_frame -= 1;
+                    }
+                } else {
+                    return Err(Error::new(ErrorType::MismatchingEndError, "Mismatching if/while/end (end)".into(), prog[k].line));
+                }
+
+                if whiles[current_while] != 0 {
+                    jump = true;
+                } else if current_while != 0 {
+                    whiles.pop();
+                    current_while -= 1;
+                }
             },
             TokenType::Append => {
                 if frames[current_frame] {
+                    let dsto = hands.pop();
+                    let srco = hands.pop();
+                    if srco.is_some() && dsto.is_some() {
+                        let src = srco.unwrap();
+                        let dst = dsto.unwrap();
+                        if dst.is_array() {
+                            let mut tmp = dst.get_array();
+                            tmp.push(src);
+                            hands.push(Value::Array(tmp));
+                        } else {
+                            hands.push(Value::Array(vec![dst, src]));
+                        }
+                    } else {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when appending to array (append)".into(), prog[k].line));
+                    }
                 }
             },
             TokenType::Drop => {
                 if frames[current_frame] {
+                    if hands.pop().is_none() {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when dropping value (drop)".into(), prog[k].line));
+                    }
+                }
+            },
+            TokenType::EndOfFile => {
+                if current_frame > 0 {
+                    return Err(Error::new(ErrorType::MismatchingEndError, "Mismatching if/while/end (eof)".into(), prog[k].line));
                 }
             },
             _ => {
-            }
+                unreachable!();
+            },
         }
 
         if jump {
@@ -207,8 +296,6 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
             k += 1;
         }
     }
-
-    println!("air: {:?}\nhands: {:?}", air, hands);
 
     Ok(())
 }
