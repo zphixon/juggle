@@ -4,6 +4,9 @@ use std::fmt;
 #[derive(Debug, PartialEq)]
 pub enum ErrorType {
     SyntaxError,
+    HandsUnderflowError,
+    AirUnderflowError,
+    TypeError,
 }
 
 #[derive(Debug)]

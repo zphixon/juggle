@@ -1,11 +1,12 @@
 
-use error::*;
+use value::*;
 
 #[derive(Debug, PartialEq)]
 pub enum TokenType {
     Toss,
     Catch,
     Joke,
+    Curse,
     Equal,
     Greater,
     Lesser,
@@ -19,8 +20,7 @@ pub enum TokenType {
     Append,
     Drop,
     Newline,
-    StringLiteral(String),
-    Number(u64),
+    Number(i64),
     Bool(bool),
     EndOfFile,
     None, // filter out later
@@ -37,6 +37,22 @@ impl Token {
         Token {
             which: which,
             line: line,
+        }
+    }
+
+    pub fn is_value(&self) -> bool {
+        match self.which {
+            TokenType::Number(_) => true,
+            TokenType::Bool(_) => true,
+            _ => false
+        }
+    }
+
+    pub fn to_value(&self) -> Value {
+        match self.which {
+            TokenType::Number(n) => Value::Number(n),
+            TokenType::Bool(b) => Value::Bool(b),
+            _ => panic!("Called to_value on non-value")
         }
     }
 }
