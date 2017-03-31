@@ -1,6 +1,7 @@
 
 extern crate juggle;
-use juggle::value::*;
+
+use juggle::*;
 
 #[test]
 fn val_eq() {
