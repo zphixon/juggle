@@ -1,1 +1,4 @@
-toss 32 toss catch catch "Hello, world!" true false
+toss 32 toss
+catch catch "hehe"
+"hello" true "Hello, world!" false toss
+"

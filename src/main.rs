@@ -8,10 +8,18 @@ extern crate juggle;
 use juggle::*;
 
 fn main() {
+    // TODO: handle errors
     let mut file = File::open(Path::new("test.txt")).unwrap();
     let mut s = String::new();
+
     file.read_to_string(&mut s).unwrap();
-    let tokens: Vec<&str> = s.split_whitespace().collect();
-    println!("{:?}", parse(tokens));
+
+    let l: Result<Vec<Token>, Error> = lex(s);
+
+    if l.is_ok() {
+        // parse
+    } else {
+        println!("{}", l.err().unwrap());
+    }
 }
 
