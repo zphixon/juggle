@@ -113,7 +113,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to add non-number values (add)".into(), prog[k].line));
                         }
-                    } {
+                    } else {
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when adding values (add)".into(), prog[k].line));
                     }
                 }
@@ -121,18 +121,17 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
 
             TokenType::Minus => {
                 if frames[current_frame] {
-                    let lho = hands.pop().unwrap();
-                    let rho = hands.pop().unwrap();
-                    //if lho.is_some() {
-                    if true {
-                        ////let lhs = lho.unwrap();
-                        ////let rhs = rho.unwrap();
-                        //if lho.is_number() && rho.is_number() {
-                        //    hands.push(Value::Number(lho.get_number() - rho.get_number()));
-                        //} else {
-                        //    return Err(Error::new(ErrorType::TypeError, "Attempted to subtract non-number values (minus)".into(), prog[k].line));
-                        //}
-                    } {
+                    let lho = hands.pop();
+                    let rho = hands.pop();
+                    if lho.is_some() {
+                        let lhs = lho.unwrap();
+                        let rhs = rho.unwrap();
+                        if lhs.is_number() && rhs.is_number() {
+                            hands.push(Value::Number(lhs.get_number() - rhs.get_number()));
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to subtract non-number values (minus)".into(), prog[k].line));
+                        }
+                    } else {
                         unreachable!();
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when subtracting values (minus)".into(), prog[k].line));
                     }
@@ -151,7 +150,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to multiply non-number values (times)".into(), prog[k].line));
                         }
-                    } {
+                    } else {
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when multiplying values (times)".into(), prog[k].line));
                     }
                 }
@@ -169,7 +168,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to divide non-number values (divided)".into(), prog[k].line));
                         }
-                    } {
+                    } else {
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when dividing values (divided)".into(), prog[k].line));
                     }
                 }
@@ -187,7 +186,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Attempted to modulus non-number values (modulo)".into(), prog[k].line));
                         }
-                    } {
+                    } else {
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when remainding values (modulo)".into(), prog[k].line));
                     }
                 }
