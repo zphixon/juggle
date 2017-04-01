@@ -20,5 +20,9 @@ impl Air {
     pub fn pop(&mut self) -> Option<value::Value> {
         self.stack.pop()
     }
+
+    pub fn clone(&mut self) -> Vec<value::Value> {
+        self.stack.clone()
+    }
 }
 
