@@ -124,7 +124,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     let lho = hands.pop().unwrap();
                     let rho = hands.pop().unwrap();
                     //if lho.is_some() {
-                    if true == true {
+                    if true {
                         ////let lhs = lho.unwrap();
                         ////let rhs = rho.unwrap();
                         //if lho.is_number() && rho.is_number() {
