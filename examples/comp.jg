@@ -1,0 +1,21 @@
+toss 3
+toss 3
+equal toss
+
+if
+    toss 10 # yes
+    toss 115
+    toss 101
+    toss 121
+    catch catch
+    catch catch
+    append append append
+    curse
+else
+    toss 10 # no
+    toss 111
+    toss 110
+    catch catch catch
+    append append
+    curse
+end
