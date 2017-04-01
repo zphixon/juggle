@@ -1,4 +1,7 @@
 
+extern crate argparse;
+extern crate rustyline;
+
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -58,6 +61,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Catch => {
                 if frames[current_frame] {
                     let tmp = air.pop();
@@ -68,6 +72,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Joke => {
                 if frames[current_frame] {
                     let opt = hands.pop();
@@ -81,6 +86,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Curse => {
                 if frames[current_frame] {
                     let opt = hands.pop();
@@ -90,10 +96,103 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                             tmp.print_as_char();
                         }
                     } else {
-                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when printing value".into(), prog[k].line));
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when printing value (curse)".into(), prog[k].line));
                     }
                 }
-            }
+            },
+
+            TokenType::Plus => {
+                if frames[current_frame] {
+                    let lho = hands.pop();
+                    let rho = hands.pop();
+                    if lho.is_some() && rho.is_some() {
+                        let lhs = lho.unwrap();
+                        let rhs = rho.unwrap();
+                        if lhs.is_number() && rhs.is_number() {
+                            hands.push(Value::Number(lhs.get_number() + rhs.get_number()));
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to add non-number values (add)".into(), prog[k].line));
+                        }
+                    } {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when adding values (add)".into(), prog[k].line));
+                    }
+                }
+            },
+
+            TokenType::Minus => {
+                if frames[current_frame] {
+                    let lho = hands.pop().unwrap();
+                    let rho = hands.pop().unwrap();
+                    //if lho.is_some() {
+                    if true == true {
+                        ////let lhs = lho.unwrap();
+                        ////let rhs = rho.unwrap();
+                        //if lho.is_number() && rho.is_number() {
+                        //    hands.push(Value::Number(lho.get_number() - rho.get_number()));
+                        //} else {
+                        //    return Err(Error::new(ErrorType::TypeError, "Attempted to subtract non-number values (minus)".into(), prog[k].line));
+                        //}
+                    } {
+                        unreachable!();
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when subtracting values (minus)".into(), prog[k].line));
+                    }
+                }
+            },
+
+            TokenType::Times => {
+                if frames[current_frame] {
+                    let lho = hands.pop();
+                    let rho = hands.pop();
+                    if lho.is_some() && rho.is_some() {
+                        let lhs = lho.unwrap();
+                        let rhs = rho.unwrap();
+                        if lhs.is_number() && rhs.is_number() {
+                            hands.push(Value::Number(lhs.get_number() * rhs.get_number()));
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to multiply non-number values (times)".into(), prog[k].line));
+                        }
+                    } {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when multiplying values (times)".into(), prog[k].line));
+                    }
+                }
+            },
+
+            TokenType::Divided => {
+                if frames[current_frame] {
+                    let lho = hands.pop();
+                    let rho = hands.pop();
+                    if lho.is_some() && rho.is_some() {
+                        let lhs = lho.unwrap();
+                        let rhs = rho.unwrap();
+                        if lhs.is_number() && rhs.is_number() {
+                            hands.push(Value::Number(lhs.get_number() / rhs.get_number()));
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to divide non-number values (divided)".into(), prog[k].line));
+                        }
+                    } {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when dividing values (divided)".into(), prog[k].line));
+                    }
+                }
+            },
+
+            TokenType::Modulo => {
+                if frames[current_frame] {
+                    let lho = hands.pop();
+                    let rho = hands.pop();
+                    if lho.is_some() && rho.is_some() {
+                        let lhs = lho.unwrap();
+                        let rhs = rho.unwrap();
+                        if lhs.is_number() && rhs.is_number() {
+                            hands.push(Value::Number(lhs.get_number() % rhs.get_number()));
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to modulus non-number values (modulo)".into(), prog[k].line));
+                        }
+                    } {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when remainding values (modulo)".into(), prog[k].line));
+                    }
+                }
+            },
+
             TokenType::Equal => {
                 if frames[current_frame] {
                     let lho = air.pop();
@@ -111,6 +210,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Greater => {
                 if frames[current_frame] {
                     let lho = air.pop();
@@ -128,6 +228,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Lesser => {
                 if frames[current_frame] {
                     let lho = air.pop();
@@ -145,6 +246,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::And => {
                 if frames[current_frame] {
                     let lho = air.pop();
@@ -162,6 +264,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Or => {
                 if frames[current_frame] {
                     let lho = air.pop();
@@ -179,6 +282,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Not => {
                 if frames[current_frame] {
                     let tmpo = hands.pop();
@@ -194,6 +298,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::If => {
                 if frames[current_frame] {
                     let tmpo = air.pop();
@@ -210,6 +315,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::While => {
                 if frames[current_frame] {
                     let tmpo = air.pop();
@@ -233,9 +339,11 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Else => {
                 frames[current_frame] = !frames[current_frame];
             },
+
             TokenType::End => {
                 if current_frame != 0 {
                     if whiles[current_while] == 0 {
@@ -245,7 +353,6 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 } else {
                     return Err(Error::new(ErrorType::MismatchingEndError, "Mismatching if/while/end (end)".into(), prog[k].line));
                 }
-
                 if whiles[current_while] != 0 {
                     jump = true;
                 } else if current_while != 0 {
@@ -253,6 +360,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     current_while -= 1;
                 }
             },
+
             TokenType::Append => {
                 if frames[current_frame] {
                     let dsto = hands.pop();
@@ -272,6 +380,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::Drop => {
                 if frames[current_frame] {
                     if hands.pop().is_none() {
@@ -279,11 +388,13 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                     }
                 }
             },
+
             TokenType::EndOfFile => {
                 if current_frame > 0 {
                     return Err(Error::new(ErrorType::MismatchingEndError, "Mismatching if/while/end (eof)".into(), prog[k].line));
                 }
             },
+
             _ => {
                 unreachable!();
             },
@@ -295,6 +406,8 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
         } else {
             k += 1;
         }
+
+        //println!("hands: {:?}\nair: {:?}", hands, air);
     }
 
     Ok(())

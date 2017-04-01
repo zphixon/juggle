@@ -1,29 +1,11 @@
 
-# Hello, world! in reverse order
-toss 10
-toss 33
-toss 100
-toss 108
-toss 114
-toss 111
-toss 119
-toss 32
-toss 44
-toss 111
-toss 108
-toss 108
-toss 101
-toss 72
+toss 2
+toss 5
 
-catch catch catch catch
-catch catch catch catch
-catch catch catch catch
-catch catch
+catch
+catch
 
-append append append append
-append append append append
-append append append append
-append
+minus
 
-curse
+joke
 
