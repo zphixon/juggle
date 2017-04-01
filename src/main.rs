@@ -84,8 +84,13 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
         let ref tok = prog[k];
 
         unsafe {
+            if DEBUG || SHOW_STACK {
+                println!("");
+            }
+
             if DEBUG {
-                println!("\n{}: {:?}, line {}", k, tok.which, tok.line);
+                println!("{}: {:?}, line {}, {} {} {} {}", k, tok.which, tok.line,
+                         frames[current_frame], frames.len(), whiles[current_while], whiles.len());
             }
 
             if SHOW_STACK {
@@ -448,9 +453,15 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 }
             },
 
+            TokenType::Number(_) => {
+                if frames[current_frame] {
+                    unreachable!();
+                }
+            },
+
             _ => {
                 unreachable!();
-            },
+            }
         }
 
         if jump {
