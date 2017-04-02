@@ -1,13 +1,22 @@
+
 toss false
 
-# this works because else is really lazy
-if else
+if
+    # no
+else
+    # yes
     toss 121
     catch joke
-else else
+else
+    # no
+else
+    # yes
     toss 101
     catch joke
-else else
+else
+    # no
+else
+    # yes
     toss 115
     catch joke
 end

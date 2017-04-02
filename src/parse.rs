@@ -14,7 +14,7 @@ pub fn parse(data: String) -> Result<Vec<Token>, Error> {
 
     let mut comment = false;
 
-    let number = Regex::new("[0-9]+").unwrap();
+    let number = Regex::new("[+-]?[0-9]+").unwrap();
 
     let mut str_tokens: Vec<&str> = Vec::new();
 
