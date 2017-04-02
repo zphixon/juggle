@@ -35,6 +35,9 @@
 | `drop`     | drop value                            | value              | hands             |              |
 | `turn`     | switch direction of air               |                    |                   |              |
 
+Mathematical and boolean operators are converted to infix, i.e. the left
+operand is popped first, then the right operand.
+
 ### values
 
 A value can have several different types: boolean, number, and array. Strings
