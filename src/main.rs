@@ -411,7 +411,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                         current_frame -= 1;
                     }
                 } else {
-                    return Err(Error::new(ErrorType::MismatchingEndError, "Mismatching if/while/end (end)".into(), tok.line));
+                    return Err(Error::new(ErrorType::SyntaxError, "Mismatching if/while/end (end)".into(), tok.line));
                 }
                 if whiles[current_while] != 0 {
                     jump = true;
@@ -526,7 +526,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
 
             TokenType::EndOfFile => {
                 if current_frame > 0 {
-                    return Err(Error::new(ErrorType::MismatchingEndError, "Mismatching if/while/end (eof)".into(), tok.line));
+                    return Err(Error::new(ErrorType::SyntaxError, "Mismatching if/while/end (eof)".into(), tok.line));
                 }
             },
 

@@ -7,7 +7,6 @@ pub enum ErrorType {
     HandsUnderflowError,
     AirUnderflowError,
     TypeError,
-    MismatchingEndError,
     IOError,
 }
 
