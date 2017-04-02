@@ -8,6 +8,7 @@ pub enum ErrorType {
     AirUnderflowError,
     TypeError,
     MismatchingEndError,
+    IOError,
 }
 
 #[derive(Debug)]

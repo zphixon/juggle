@@ -1,9 +1,9 @@
 
-use value;
+use value::*;
 
 #[derive(Debug)]
 pub struct Air {
-    stack: Vec<value::Value>,
+    stack: Vec<Value>,
 }
 
 impl Air {
@@ -13,15 +13,24 @@ impl Air {
         }
     }
 
-    pub fn push(&mut self, val: value::Value) {
+    pub fn push(&mut self, val: Value) {
         self.stack.insert(0, val);
     }
 
-    pub fn pop(&mut self) -> Option<value::Value> {
+    pub fn pop(&mut self) -> Option<Value> {
         self.stack.pop()
     }
 
-    pub fn clone(&mut self) -> Vec<value::Value> {
+    pub fn pop_last(&mut self) -> Option<Value> {
+        // this is stupid
+        if self.stack.is_empty() {
+            None
+        } else {
+            Some(self.stack.remove(0))
+        }
+    }
+
+    pub fn clone(&mut self) -> Vec<Value> {
         self.stack.clone()
     }
 }

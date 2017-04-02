@@ -25,12 +25,11 @@ pub fn lex(data: String) -> Result<Vec<Token>, Error> {
     }
 
     for str_tok in str_tokens {
-        //println!("{} \"{}\"", i, str_tok.clone());
         tokens.push(Token::new(match str_tok {
             "toss" => TokenType::Toss,
             "catch" => TokenType::Catch,
-            "joke" => TokenType::Joke,
             "curse" => TokenType::Curse,
+            "joke" => TokenType::Joke,
             "plus" => TokenType::Plus,
             "minus" => TokenType::Minus,
             "times" => TokenType::Times,
@@ -49,6 +48,9 @@ pub fn lex(data: String) -> Result<Vec<Token>, Error> {
             "else" => TokenType::Else,
             "end" => TokenType::End,
             "append" => TokenType::Append,
+            "feedback" => TokenType::Feedback,
+            "rethrow" => TokenType::Rethrow,
+            "recatch" => TokenType::Recatch,
             "drop" => TokenType::Drop,
             "\n" => {
                 if comment { comment = false; }

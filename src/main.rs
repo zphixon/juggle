@@ -67,6 +67,8 @@ fn main() {
 }
 
 fn eval(prog: Vec<Token>) -> Result<(), Error> {
+    let mut rl = Editor::<()>::new();
+
     let mut air = Air::new();
     let mut hands = Hands::new();
 
@@ -133,7 +135,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 }
             },
 
-            TokenType::Joke => {
+            TokenType::Curse => {
                 if frames[current_frame] {
                     let opt = hands.pop();
                     if opt.is_some() {
@@ -147,7 +149,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 }
             },
 
-            TokenType::Curse => {
+            TokenType::Joke => {
                 if frames[current_frame] {
                     let opt = hands.pop();
                     if opt.is_some() {
@@ -439,6 +441,48 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 }
             },
 
+            TokenType::Feedback => {
+                if frames[current_frame] {
+                    let read = rl.readline("> ");
+                    let input: String = match read {
+                        Ok(line) => line,
+                        Err(_) => {
+                            return Err(Error::new(ErrorType::IOError, "Error on input (feedback)".into(), tok.line));
+                        }
+                    };
+                    let t = Value::Array(input.bytes()
+                                         .map(|x| Value::Number(x as i64))
+                                         .collect::<Vec<Value>>());
+                    air.push(t);
+                }
+            }
+
+            TokenType::Rethrow => {
+                if frames[current_frame] {
+                    let tmp = air.pop_last();
+                    if tmp.is_some() {
+                        let t = tmp.unwrap();
+                        air.push(t.clone());
+                        air.push(t);
+                    } else {
+                        return Err(Error::new(ErrorType::AirUnderflowError, "Air underflowed when duplicating (rethrow)".into(), tok.line));
+                    }
+                }
+            },
+
+            TokenType::Recatch => {
+                if frames[current_frame] {
+                    let tmp = hands.pop();
+                    if tmp.is_some() {
+                        let t = tmp.unwrap();
+                        hands.push(t.clone());
+                        hands.push(t);
+                    } else {
+                        return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when duplicating (recatch)".into(), tok.line));
+                    }
+                }
+            },
+
             TokenType::Drop => {
                 if frames[current_frame] {
                     if hands.pop().is_none() {
@@ -470,8 +514,6 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
         } else {
             k += 1;
         }
-
-        //println!("hands: {:?}\nair: {:?}", hands, air);
     }
 
     Ok(())

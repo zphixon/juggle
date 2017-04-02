@@ -4,8 +4,8 @@ use value::*;
 #[derive(Debug, PartialEq)]
 pub enum TokenType {
     Toss,
-    Catch,
     Joke,
+    Catch,
     Curse,
     Plus,
     Minus,
@@ -23,6 +23,9 @@ pub enum TokenType {
     Else,
     End,
     Append,
+    Feedback,
+    Rethrow,
+    Recatch,
     Drop,
     Number(i64),
     Bool(bool),

@@ -1,11 +1,13 @@
 
-toss 2
-toss 5
+toss true
 
-catch
-catch
+while
+    feedback
+    catch joke
 
-minus
+    toss 10
+    catch joke
 
-joke
+    toss true
+end
 
