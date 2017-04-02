@@ -7,8 +7,7 @@
 ### table of functions
 
 |  function  |                purpose                |      arguments     |        from       |      to      |
-|:----------:|:-------------------------------------:|:------------------:|:-----------------:|:------------:|
-|:-----------|:--------------------------------------|:-------------------|:------------------|:-------------|
+|------------|---------------------------------------|--------------------|-------------------|--------------|
 | `toss`     | push a value into the air             | value/syntax       | hands if no value | air          |
 | `catch`    | pop a value from the air to the hands | value              | air               | hands        |
 | `curse`    | print value                           | value              | hands             |              |
