@@ -48,6 +48,7 @@ pub fn lex(data: String) -> Result<Vec<Token>, Error> {
             "else" => TokenType::Else,
             "end" => TokenType::End,
             "append" => TokenType::Append,
+            "nth" => TokenType::Nth,
             "feedback" => TokenType::Feedback,
             "rethrow" => TokenType::Rethrow,
             "recatch" => TokenType::Recatch,

@@ -441,11 +441,38 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 }
             },
 
+            TokenType::Nth => {
+                if frames[current_frame] {
+                    let from = air.pop();
+                    if from.is_some() {
+                        let arr = from.unwrap();
+                        if arr.is_array() {
+                            let nth = hands.pop();
+                            if nth.is_some() {
+                                let n = nth.unwrap();
+                                if n.is_number() {
+                                    air.push(arr.get_array()[n.get_number() as usize].clone());
+                                } else {
+                                    return Err(Error::new(ErrorType::TypeError, "Attempted to index array with non-number (nth)".into(), tok.line));
+                                }
+                            } else {
+                                return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when getting nth element (nth)".into(), tok.line));
+                            }
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to index non-array (nth)".into(), tok.line));
+                        }
+                    } else {
+                        return Err(Error::new(ErrorType::AirUnderflowError, "Air underflowed when getting nth element (nth)".into(), tok.line));
+                    }
+                }
+            }
+
             TokenType::Feedback => {
                 if frames[current_frame] {
                     let read = rl.readline("> ");
                     let input: String = match read {
                         Ok(line) => line,
+                        Err(rustyline::error::ReadlineError::Eof) => "".into(),
                         Err(_) => {
                             return Err(Error::new(ErrorType::IOError, "Error on input (feedback)".into(), tok.line));
                         }

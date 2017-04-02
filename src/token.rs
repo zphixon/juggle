@@ -23,6 +23,7 @@ pub enum TokenType {
     Else,
     End,
     Append,
+    Nth,
     Feedback,
     Rethrow,
     Recatch,
