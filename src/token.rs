@@ -28,6 +28,7 @@ pub enum TokenType {
     Rethrow,
     Recatch,
     Drop,
+    Turn,
     Number(i64),
     Bool(bool),
     EndOfFile,

@@ -518,6 +518,12 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 }
             },
 
+            TokenType::Turn => {
+                if frames[current_frame] {
+                    air.reverse();
+                }
+            }
+
             TokenType::EndOfFile => {
                 if current_frame > 0 {
                     return Err(Error::new(ErrorType::MismatchingEndError, "Mismatching if/while/end (eof)".into(), tok.line));

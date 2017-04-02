@@ -33,5 +33,9 @@ impl Air {
     pub fn clone(&mut self) -> Vec<Value> {
         self.stack.clone()
     }
+
+    pub fn reverse(&mut self) {
+        self.stack.reverse();
+    }
 }
 

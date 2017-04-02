@@ -53,6 +53,7 @@ pub fn lex(data: String) -> Result<Vec<Token>, Error> {
             "rethrow" => TokenType::Rethrow,
             "recatch" => TokenType::Recatch,
             "drop" => TokenType::Drop,
+            "turn" => TokenType::Turn,
             "\n" => {
                 if comment { comment = false; }
                 line += 1;
