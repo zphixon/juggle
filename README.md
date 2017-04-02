@@ -4,6 +4,37 @@
 
 ## explain me
 
+### table of functions
+
+|  function  |                purpose                |      arguments     |        from       |      to      |
+|:----------:|:-------------------------------------:|:------------------:|:-----------------:|:------------:|
+| `toss`     | push a value into the air             | value/syntax       | hands if no value | air          |
+| `catch`    | pop a value from the air to the hands | value              | air               | hands        |
+| `curse`    | print value                           | value              | hands             |              |
+| `joke`     | print value as char                   | value              | hands             |              |
+| `plus`     | add two numbers                       | number, number     | hands, hands      | hands        |
+| `minus`    | subtract two numbers                  | number, number     | hands, hands      | hands        |
+| `times`    | multiply two numbers                  | number, number     | hands, hansd      | hands        |
+| `divided`  | divide a number                       | number, number     | hands, hands      | hands        |
+| `modulo`   | take remainder of number              | number, number     | hands, hands      | hands        |
+| `equal`    | compare two values                    | value, value       | air, air          | hands        |
+| `greater`  | compare two numbers                   | number, number     | air, air          | hands        |
+| `lesser`   | compare two numbers                   | number, number     | air, air          | hands        |
+| `and`      | logical and two bools                 | bool, bool         | air, air          | hands        |
+| `or`       | logical or two bools                  | bool, bool         | air, air          | hands        |
+| `not`      | logical not a bool                    | bool               | hands             | hands        |
+| `if`       | execute body if true                  | bool               | air               |              |
+| `while`    | execute body if true multiple times   | bool               | air               |              |
+| `else`     | swap execution status                 |                    |                   |              |
+| `end`      | finish if/while                       |                    |                   |              |
+| `append`   | append value to array or two values   | array/value, value | hands, hands      | hands        |
+| `nth`      | get nth value of array                | array, number      | air, hands        | air          |
+| `feedback` | get input                             |                    |                   | air          |
+| `rethrow`  | throw value again                     | value              | air               | air, air     |
+| `recatch`  | catch value again                     | value              | hands             | hands, hands |
+| `drop`     | drop value                            | value              | hands             |              |
+| `turn`     | switch direction of air               |                    |                   |              |
+
 ### values
 
 A value can have several different types: boolean, number, and array. Strings
