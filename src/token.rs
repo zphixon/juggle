@@ -29,8 +29,9 @@ pub enum TokenType {
     Recatch,
     Drop,
     Turn,
-    Number(i64),
-    Bool(bool),
+    Value(Value),
+    //Number(i64),
+    //Bool(bool),
     EndOfFile,
     None,
 }
@@ -51,16 +52,14 @@ impl Token {
 
     pub fn is_value(&self) -> bool {
         match self.which {
-            TokenType::Number(_) => true,
-            TokenType::Bool(_) => true,
+            TokenType::Value(_) => true,
             _ => false
         }
     }
 
     pub fn to_value(&self) -> Value {
         match self.which {
-            TokenType::Number(n) => Value::Number(n),
-            TokenType::Bool(b) => Value::Bool(b),
+            TokenType::Value(ref v) => v.clone(),
             _ => panic!("Called to_value on non-value")
         }
     }

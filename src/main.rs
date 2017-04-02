@@ -530,7 +530,7 @@ fn eval(prog: Vec<Token>) -> Result<(), Error> {
                 }
             },
 
-            TokenType::Number(_) => {
+            TokenType::Value(_) => {
                 if frames[current_frame] {
                     unreachable!();
                 }

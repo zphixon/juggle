@@ -5,6 +5,7 @@ use self::regex::Regex;
 
 use token::*;
 use error::*;
+use value::*;
 
 pub fn parse(data: String) -> Result<Vec<Token>, Error> {
     let mut tokens: Vec<Token> = Vec::new();
@@ -35,8 +36,8 @@ pub fn parse(data: String) -> Result<Vec<Token>, Error> {
             "times" => TokenType::Times,
             "divided" => TokenType::Divided,
             "modulo" => TokenType::Modulo,
-            "true" => TokenType::Bool(true),
-            "false" => TokenType::Bool(false),
+            "true" => TokenType::Value(Value::Bool(true)),
+            "false" => TokenType::Value(Value::Bool(false)),
             "equal" => TokenType::Equal,
             "greater" => TokenType::Greater,
             "lesser" => TokenType::Lesser,
@@ -62,7 +63,7 @@ pub fn parse(data: String) -> Result<Vec<Token>, Error> {
             _ => {
                 if !comment {
                     if number.is_match(str_tok) {
-                        TokenType::Number(str_tok.parse::<i64>().unwrap())
+                        TokenType::Value(Value::Number(str_tok.parse::<i64>().unwrap()))
                     } else if str_tok.starts_with("#") {
                         comment = true;
                         TokenType::None
