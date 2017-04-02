@@ -10,12 +10,12 @@ if
     catch catch
     catch catch
     append append append
-    curse
+    joke
 else
     toss 10 # no
     toss 111
     toss 110
     catch catch catch
     append append
-    curse
+    joke
 end
