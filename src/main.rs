@@ -54,7 +54,7 @@ fn main() {
     let mut s = String::new();
     file.read_to_string(&mut s).unwrap();
 
-    let l: Result<Vec<Token>, Error> = lex(s);
+    let l: Result<Vec<Token>, Error> = parse(s);
 
     if l.is_ok() {
         let e: Result<(), Error> = eval(l.unwrap());

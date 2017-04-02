@@ -6,7 +6,7 @@ use self::regex::Regex;
 use token::*;
 use error::*;
 
-pub fn lex(data: String) -> Result<Vec<Token>, Error> {
+pub fn parse(data: String) -> Result<Vec<Token>, Error> {
     let mut tokens: Vec<Token> = Vec::new();
 
     let mut line: u64 = 1;
