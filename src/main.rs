@@ -527,7 +527,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands) -> Result<(), Error>
 
             TokenType::Routine => {
                 if frames[current_frame] {
-                    frames.push(true);
+                    frames.push(false);
                     current_frame += 1;
                 }
             },

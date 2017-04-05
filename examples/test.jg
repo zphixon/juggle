@@ -1,17 +1,8 @@
-toss false
 
-# this works because else is really lazy
-if else
-    toss 121
-    catch joke
-else else
-    toss 101
-    catch joke
-else else
-    toss 115
-    catch joke
+toss 3 routine
+    toss 10
+    toss 100
+    catch catch
+    append joke
 end
-
-toss 10
-catch joke
 
