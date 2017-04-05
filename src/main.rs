@@ -57,7 +57,11 @@ fn main() {
     let l: Result<Vec<Token>, Error> = parse(s);
 
     if l.is_ok() {
-        let e: Result<(), Error> = eval(l.unwrap());
+        let mut air = Air::new();
+        let mut hands = Hands::new();
+
+        let e: Result<(), Error> = eval(l.unwrap(), &mut air, &mut hands);
+
         if e.is_err() {
             println!("{}", e.err().unwrap());
         }
@@ -66,11 +70,8 @@ fn main() {
     }
 }
 
-fn eval(prog: Vec<Token>) -> Result<(), Error> {
+fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands) -> Result<(), Error> {
     let mut rl = Editor::<()>::new();
-
-    let mut air = Air::new();
-    let mut hands = Hands::new();
 
     let mut frames = vec![true];
     let mut current_frame = 0;
