@@ -527,8 +527,14 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands) -> Result<(), Error>
 
             TokenType::Routine => {
                 if frames[current_frame] {
-                    frames.push(false);
-                    current_frame += 1;
+                    let nameo = air.pop();
+                    if nameo.is_some() {
+                        let name = nameo.unwrap();
+                        frames.push(false);
+                        current_frame += 1;
+                    } else {
+                        return Err(Error::new(ErrorType::AirUnderflowError, "Air underflowed when creating routine (routine)".into(), tok.line));
+                    }
                 }
             },
 
