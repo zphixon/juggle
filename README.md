@@ -8,7 +8,8 @@
 
 |  function  |                purpose                |      arguments     |        from       |      to      |
 |------------|---------------------------------------|--------------------|-------------------|--------------|
-| `toss`     | push a value into the air             | value/syntax       | hands if no value | air          |
+| `toss`     | push a value into the air             | syntax             | syntax            | air          |
+| `toss`     | push a value from hands to the air    | value              | hands             | air          |
 | `catch`    | pop a value from the air to the hands | value              | air               | hands        |
 | `curse`    | print value                           | value              | hands             |              |
 | `joke`     | print value as char                   | value              | hands             |              |
@@ -26,7 +27,7 @@
 | `if`       | execute body if true                  | bool               | air               |              |
 | `while`    | execute body if true multiple times   | bool               | air               |              |
 | `else`     | swap execution status                 |                    |                   |              |
-| `end`      | finish if/while                       |                    |                   |              |
+| `end`      | finish if/while/routine               |                    |                   |              |
 | `append`   | append value to array or two values   | array/value, value | hands, hands      | hands        |
 | `nth`      | get nth value of array                | array, number      | air, hands        | air          |
 | `feedback` | get input                             |                    |                   | air          |
@@ -34,6 +35,8 @@
 | `recatch`  | catch value again                     | value              | hands             | hands, hands |
 | `drop`     | drop value                            | value              | hands             |              |
 | `turn`     | switch direction of air               |                    |                   |              |
+| `routine`  | create a subroutine                   | number             | air               |              |
+| `routine`  | call a subroutine                     | number             | air               |              |
 
 Mathematical and boolean operators are converted to infix, i.e. the left
 operand is popped first, then the right operand.
@@ -58,36 +61,7 @@ multiple times.
 ### routines
 
 A juggler can create routines which perform common operations, such as handling
-stack juggling or performing computations.
-
-## show me
-
-### hello world
-
-```
-toss "Hello, world!" catch
-joke
-```
-
-### comparison
-
-```
-toss 1
-toss 2
-equal
-
-catch drop
-catch drop
-catch
-
-if
-    toss "yes"
-    catch joke
-else
-    toss "no"
-    catch joke
-end
-
-drop drop
-```
+stack juggling or performing computations. Rountines are started by tossing a
+number and using the `routine` command, and ended by `end`. They are then
+called by tossing the routine's number.
 
