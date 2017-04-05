@@ -76,12 +76,14 @@ fn main() {
 fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashMap<i64, Vec<Token>>) -> Result<(), Error> {
     let mut rl = Editor::<()>::new();
 
-    let mut frames = vec![true];
+    let mut frames = vec![Frame::new(true)];
     let mut current_frame = 0;
 
     let mut whiles = vec![0];
     let mut current_while = whiles.len() - 1;
     let mut jump = false;
+
+    let mut routine = false;
 
     let mut k = 0;
 
@@ -96,7 +98,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
 
             if DEBUG {
                 println!("{}: {:?}, line {}, {} {} {} {}", k, tok.which, tok.line,
-                         frames[current_frame], frames.len(), whiles[current_while], whiles.len());
+                         frames[current_frame].is_exec, frames.len(), whiles[current_while], whiles.len());
             }
 
             if SHOW_STACK {
@@ -113,7 +115,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
 
         match tok.which {
             TokenType::Toss => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     if k + 1 != prog.len() && prog[k + 1].is_value() {
                         air.push(prog[k + 1].to_value());
                         k += 1;
@@ -129,7 +131,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Catch => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let tmp = air.pop();
                     if tmp.is_some() {
                         hands.push(tmp.unwrap());
@@ -140,7 +142,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Curse => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let opt = hands.pop();
                     if opt.is_some() {
                         let tmp = opt.unwrap();
@@ -154,7 +156,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Joke => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let opt = hands.pop();
                     if opt.is_some() {
                         let tmp = opt.unwrap();
@@ -168,7 +170,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Plus => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = hands.pop();
                     let rho = hands.pop();
                     if lho.is_some() && rho.is_some() {
@@ -186,7 +188,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Minus => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = hands.pop();
                     let rho = hands.pop();
                     if lho.is_some() {
@@ -204,7 +206,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Times => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = hands.pop();
                     let rho = hands.pop();
                     if lho.is_some() && rho.is_some() {
@@ -222,7 +224,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Divided => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = hands.pop();
                     let rho = hands.pop();
                     if lho.is_some() && rho.is_some() {
@@ -240,7 +242,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Modulo => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = hands.pop();
                     let rho = hands.pop();
                     if lho.is_some() && rho.is_some() {
@@ -258,7 +260,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Equal => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = air.pop();
                     let rho = air.pop();
                     if lho.is_some() && rho.is_some() {
@@ -276,7 +278,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Greater => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = air.pop();
                     let rho = air.pop();
                     if lho.is_some() && rho.is_some() {
@@ -294,7 +296,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Lesser => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = air.pop();
                     let rho = air.pop();
                     if lho.is_some() && rho.is_some() {
@@ -312,7 +314,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::And => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = air.pop();
                     let rho = air.pop();
                     if lho.is_some() && rho.is_some() {
@@ -330,7 +332,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Or => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let lho = air.pop();
                     let rho = air.pop();
                     if lho.is_some() && rho.is_some() {
@@ -348,7 +350,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Not => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let tmpo = hands.pop();
                     if tmpo.is_some() {
                         let tmp = tmpo.unwrap();
@@ -364,12 +366,12 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::If => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let tmpo = air.pop();
                     if tmpo.is_some() {
                         let tmp = tmpo.unwrap();
                         if tmp.is_bool() {
-                            frames.push(tmp.get_bool());
+                            frames.push(Frame::new(tmp.get_bool()));
                             current_frame += 1;
                         } else {
                             return Err(Error::new(ErrorType::TypeError, "Condition requires bool (if)".into(), tok.line));
@@ -381,16 +383,16 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::While => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let tmpo = air.pop();
                     if tmpo.is_some() {
                         let tmp = tmpo.unwrap();
                         if tmp.is_bool() {
                             if tmp.get_bool() {
-                                frames.push(true);
+                                frames.push(Frame::new(true));
                                 whiles.push(k);
                             } else {
-                                frames.push(false);
+                                frames.push(Frame::new(false));
                                 whiles.push(0);
                             }
                             current_frame += 1;
@@ -405,7 +407,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Else => {
-                frames[current_frame] = !frames[current_frame];
+                frames[current_frame].is_exec = !frames[current_frame].is_exec;
             },
 
             TokenType::End => {
@@ -426,7 +428,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Append => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let dsto = hands.pop();
                     let srco = hands.pop();
                     if srco.is_some() && dsto.is_some() {
@@ -446,7 +448,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Nth => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let from = air.pop();
                     if from.is_some() {
                         let arr = from.unwrap();
@@ -472,7 +474,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             }
 
             TokenType::Feedback => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let read = rl.readline("> ");
                     let input: String = match read {
                         Ok(line) => line,
@@ -489,7 +491,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             }
 
             TokenType::Rethrow => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let tmp = air.pop_last();
                     if tmp.is_some() {
                         let t = tmp.unwrap();
@@ -502,7 +504,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Recatch => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let tmp = hands.pop();
                     if tmp.is_some() {
                         let t = tmp.unwrap();
@@ -515,7 +517,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Drop => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     if hands.pop().is_none() {
                         return Err(Error::new(ErrorType::HandsUnderflowError, "Hands underflowed when dropping value (drop)".into(), tok.line));
                     }
@@ -523,13 +525,13 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Turn => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     air.reverse();
                 }
             },
 
             TokenType::Routine => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     let nameo = air.pop();
                     if nameo.is_some() {
                         let namev = nameo.unwrap();
@@ -542,7 +544,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
                                 }
                             } else {
                                 routine = true;
-                                frames.push(false);
+                                frames.push(Frame::new_routine(false, name));
                                 current_frame += 1;
                             }
                         } else {
@@ -561,7 +563,7 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::Value(_) => {
-                if frames[current_frame] {
+                if frames[current_frame].is_exec {
                     unreachable!();
                 }
             },
