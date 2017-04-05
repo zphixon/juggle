@@ -8,6 +8,7 @@ use rustyline::Editor;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
+use std::collections::HashMap;
 
 extern crate juggle;
 
@@ -60,7 +61,9 @@ fn main() {
         let mut air = Air::new();
         let mut hands = Hands::new();
 
-        let e: Result<(), Error> = eval(l.unwrap(), &mut air, &mut hands);
+        let mut routines = HashMap::new();
+
+        let e: Result<(), Error> = eval(l.unwrap(), &mut air, &mut hands, &mut routines);
 
         if e.is_err() {
             println!("{}", e.err().unwrap());
@@ -70,7 +73,7 @@ fn main() {
     }
 }
 
-fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands) -> Result<(), Error> {
+fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashMap<i64, Vec<Token>>) -> Result<(), Error> {
     let mut rl = Editor::<()>::new();
 
     let mut frames = vec![true];
