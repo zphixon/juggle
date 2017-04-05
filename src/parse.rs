@@ -55,6 +55,7 @@ pub fn parse(data: String) -> Result<Vec<Token>, Error> {
             "recatch" => TokenType::Recatch,
             "drop" => TokenType::Drop,
             "turn" => TokenType::Turn,
+            "routine" => TokenType::Routine,
             "\n" => {
                 if comment { comment = false; }
                 line += 1;

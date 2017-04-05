@@ -29,6 +29,7 @@ pub enum TokenType {
     Recatch,
     Drop,
     Turn,
+    Routine,
     Value(Value),
     //Number(i64),
     //Bool(bool),

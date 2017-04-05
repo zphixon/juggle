@@ -523,7 +523,14 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands) -> Result<(), Error>
                 if frames[current_frame] {
                     air.reverse();
                 }
-            }
+            },
+
+            TokenType::Routine => {
+                if frames[current_frame] {
+                    frames.push(true);
+                    current_frame += 1;
+                }
+            },
 
             TokenType::EndOfFile => {
                 if current_frame > 0 {
