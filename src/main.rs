@@ -532,9 +532,22 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
                 if frames[current_frame] {
                     let nameo = air.pop();
                     if nameo.is_some() {
-                        let name = nameo.unwrap();
-                        frames.push(false);
-                        current_frame += 1;
+                        let namev = nameo.unwrap();
+                        if namev.is_number() {
+                            let name = namev.get_number();
+                            if routines.contains_key(&name) {
+                                let res = eval(routines.get(&name).unwrap().to_vec(), air, hands, routines);
+                                if res.is_err() {
+                                    return res;
+                                }
+                            } else {
+                                routine = true;
+                                frames.push(false);
+                                current_frame += 1;
+                            }
+                        } else {
+                            return Err(Error::new(ErrorType::TypeError, "Attempted to name routine non-number (routine)".into(), tok.line));
+                        }
                     } else {
                         return Err(Error::new(ErrorType::AirUnderflowError, "Air underflowed when creating routine (routine)".into(), tok.line));
                     }
