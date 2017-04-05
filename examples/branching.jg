@@ -2,21 +2,21 @@
 toss false
 
 if
-    # no
+#    no
 else
-    # yes
+#   yes
     toss 121
     catch joke
 else
-    # no
+#   no
 else
-    # yes
+#   yes
     toss 101
     catch joke
 else
-    # no
+#   no
 else
-    # yes
+#   yes
     toss 115
     catch joke
 end

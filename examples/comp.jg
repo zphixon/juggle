@@ -3,7 +3,8 @@ toss 3
 equal toss
 
 if
-    toss 10 # yes
+#   yes
+    toss 10
     toss 115
     toss 101
     toss 121
@@ -12,7 +13,8 @@ if
     append append append
     joke
 else
-    toss 10 # no
+#   no
+    toss 10
     toss 111
     toss 110
     catch catch catch

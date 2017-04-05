@@ -1,8 +1,18 @@
 
-toss 3 routine
-    toss 10
-    toss 100
-    catch catch
-    append joke
+# toss 3 routine
+#     toss 10
+#     toss 100
+#     catch catch
+#     append joke
+# end
+
+toss true
+while
+    feedback
+    toss 0
+    turn catch
+    nth
+    toss 32
+    equal toss
 end
 

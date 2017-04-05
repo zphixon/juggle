@@ -12,15 +12,15 @@ pub fn parse(data: String) -> Result<Vec<Token>, Error> {
 
     let mut line: u64 = 1;
 
-    let mut comment = false;
-
     let number = Regex::new("[+-]?[0-9]+").unwrap();
 
     let mut str_tokens: Vec<&str> = Vec::new();
 
     for line in data.lines() {
-        for token in line.split_whitespace() {
-            str_tokens.push(token);
+        if !line.starts_with("#") {
+            for token in line.split_whitespace() {
+                str_tokens.push(token);
+            }
         }
         str_tokens.push("\n");
     }
@@ -57,22 +57,14 @@ pub fn parse(data: String) -> Result<Vec<Token>, Error> {
             "turn" => TokenType::Turn,
             "routine" => TokenType::Routine,
             "\n" => {
-                if comment { comment = false; }
                 line += 1;
                 TokenType::None
             },
             _ => {
-                if !comment {
-                    if number.is_match(str_tok) {
-                        TokenType::Value(Value::Number(str_tok.parse::<i64>().unwrap()))
-                    } else if str_tok.starts_with("#") {
-                        comment = true;
-                        TokenType::None
-                    } else {
-                        return Err(Error::new(ErrorType::SyntaxError, "Unkown command".into(), line));
-                    }
+                if number.is_match(str_tok) {
+                    TokenType::Value(Value::Number(str_tok.parse::<i64>().unwrap()))
                 } else {
-                    TokenType::None
+                    return Err(Error::new(ErrorType::SyntaxError, "Unkown command".into(), line));
                 }
             }
         }, line));
