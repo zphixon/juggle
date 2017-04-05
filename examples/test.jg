@@ -1,18 +1,23 @@
 
-# toss 3 routine
-#     toss 10
-#     toss 100
-#     catch catch
-#     append joke
-# end
-
-toss true
-while
-    feedback
-    toss 0
-    turn catch
-    nth
-    toss 32
-    equal toss
+# print d
+toss 3 routine
+    toss 100
+    catch joke
 end
+
+# print U
+toss 4 routine
+    toss 85
+    catch joke
+end
+
+# print dU\n
+toss 6 routine
+    toss 3 routine
+    toss 4 routine
+    toss 10
+    catch joke
+end
+
+toss 6 routine
 

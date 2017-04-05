@@ -68,6 +68,8 @@ fn main() {
         if e.is_err() {
             println!("{}", e.err().unwrap());
         }
+
+        //println!("{:?}", routines);
     } else {
         println!("{}", l.err().unwrap());
     }
@@ -83,6 +85,9 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
     let mut current_while = whiles.len() - 1;
     let mut jump = false;
 
+    let mut fake_routine: Vec<Token> = vec![];
+    let mut routine_name = 0;
+    let mut first_routine = false;
     let mut routine = false;
 
     let mut k = 0;
@@ -97,8 +102,8 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             }
 
             if DEBUG {
-                println!("{}: {:?}, line {}, {} {} {} {}", k, tok.which, tok.line,
-                         frames[current_frame].is_exec, frames.len(), whiles[current_while], whiles.len());
+                println!("{}: {:?}, line {}, {} {} {} {} {}", k, tok.which, tok.line,
+                         frames[current_frame].is_exec, frames.len(), whiles[current_while], whiles.len(), routine);
             }
 
             if SHOW_STACK {
@@ -411,19 +416,27 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
             },
 
             TokenType::End => {
-                if current_frame != 0 {
-                    if whiles[current_while] == 0 {
-                        frames.pop();
-                        current_frame -= 1;
-                    }
+                if routine {
+                    routines.insert(routine_name, fake_routine.clone());
+                    fake_routine.clear();
+                    routine = false;
+                    frames.pop();
+                    current_frame -= 1;
                 } else {
-                    return Err(Error::new(ErrorType::SyntaxError, "Mismatching if/while/end (end)".into(), tok.line));
-                }
-                if whiles[current_while] != 0 {
-                    jump = true;
-                } else if current_while != 0 {
-                    whiles.pop();
-                    current_while -= 1;
+                    if current_frame != 0 {
+                        if whiles[current_while] == 0 {
+                            frames.pop();
+                            current_frame -= 1;
+                        }
+                    } else {
+                        return Err(Error::new(ErrorType::SyntaxError, "Mismatching if/while/end (end)".into(), tok.line));
+                    }
+                    if whiles[current_while] != 0 {
+                        jump = true;
+                    } else if current_while != 0 {
+                        whiles.pop();
+                        current_while -= 1;
+                    }
                 }
             },
 
@@ -543,7 +556,9 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
                                     return res;
                                 }
                             } else {
+                                first_routine = true;
                                 routine = true;
+                                routine_name = name;
                                 frames.push(Frame::new_routine(false, name));
                                 current_frame += 1;
                             }
@@ -570,6 +585,14 @@ fn eval(prog: Vec<Token>, air: &mut Air, hands: &mut Hands, routines: &mut HashM
 
             _ => {
                 unreachable!();
+            }
+        }
+
+        if routine {
+            if first_routine {
+                first_routine = false;
+            } else {
+                fake_routine.push(tok.clone());
             }
         }
 
