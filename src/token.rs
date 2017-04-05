@@ -1,7 +1,7 @@
 
 use value::*;
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum TokenType {
     Toss,
     Joke,
@@ -31,13 +31,11 @@ pub enum TokenType {
     Turn,
     Routine,
     Value(Value),
-    //Number(i64),
-    //Bool(bool),
     EndOfFile,
     None,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Token {
     pub which: TokenType,
     pub line: u64,
